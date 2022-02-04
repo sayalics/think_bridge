@@ -12,6 +12,8 @@ target 'think_bridge' do
     :hermes_enabled => false
   )
 
+  pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
+
   target 'think_bridgeTests' do
     inherit! :complete
     # Pods for testing
