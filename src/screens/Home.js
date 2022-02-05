@@ -25,16 +25,19 @@
  
    const [list, setList] = useState(
      [
-       { key: "Square" },
-       { key: "Portrait" },
-       { key: "LandScape" },
-       { key: "Favorites"}
-     ]
+       { key: "Square", array:"evenImageArray"},
+       { key: "Portrait", array:"portraitImageArray" },
+       { key: "LandScape", array:"landscapeImageArray" },
+       { key: "Favorites", array:"favImageArray"}
+     ]       
    );
  
    const renderItem = (item ) => (
      <TouchableOpacity 
-     onPress={() => navigation.navigate(item.key)}
+     onPress={() => navigation.navigate("List",{
+       "key":item.key,
+       "array": item.array 
+     })}
      style={styles.GridViewContainer}>
        <Text style={styles.GridViewTextLayout} 
         > 
@@ -134,13 +137,6 @@
         flex: 1,
         backgroundColor: "#FFFFFF",
         margin:5,
-    },
-    Title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        fontStyle:'normal',
-        color:"#0A0AFF",
-        marginVertical:10,
     },
     GridViewContainer: {
         flex:1,

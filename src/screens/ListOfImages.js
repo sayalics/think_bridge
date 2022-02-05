@@ -23,18 +23,19 @@
   
  import Icon from "react-native-vector-icons/FontAwesome";
 
- function SquareImages() {
+ function SquareImages({navigation, route}) {
  
    const [list, setList] = useState([]);
    const [favImagesArray, setFavImagesArray] = useState([]);
  
    useEffect(() =>{
+    navigation.setOptions({ headerTitle: route.params.key })
     async function retriveData(){
-        let array = JSON.parse(await AsyncStorage.getItem('evenImageArray')) === null 
+        let array = JSON.parse(await AsyncStorage.getItem(route.params.array)) === null 
         ? [] 
-        : JSON.parse(await AsyncStorage.getItem('evenImageArray'));
+        : JSON.parse(await AsyncStorage.getItem(route.params.array));
         setList(array);
-        console.log(JSON.parse(await AsyncStorage.getItem('evenImageArray'), array));
+        console.log(JSON.parse(await AsyncStorage.getItem(route.params.array), array));
         let array1 = JSON.parse(await AsyncStorage.getItem('favImageArray')) === null 
         ? [] 
         : JSON.parse(await AsyncStorage.getItem('favImageArray'));
@@ -50,6 +51,9 @@
     if (newArr.includes(item)) {
       var index = newArr.indexOf(item);
       newArr.splice(index, 1);
+      if (route.params.key === "Favorites"){
+        setList(newArr);
+      }
       setFavImagesArray(newArr);
       await AsyncStorage.setItem('favImageArray', JSON.stringify(newArr));
     } else {
@@ -118,13 +122,6 @@
         backgroundColor: "#FFFFFF",
         margin:5,
         alignItems:'center'
-    },
-    Title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        fontStyle:'normal',
-        color:"#0A0AFF",
-        marginVertical:10,
     },
     GridViewContainer: {
         // flex:1,
