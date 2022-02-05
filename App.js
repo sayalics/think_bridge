@@ -15,6 +15,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Image,
   TouchableOpacity,
   PermissionsAndroid
 } from 'react-native';
@@ -24,6 +25,19 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import ImagePicker from "react-native-image-crop-picker";
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { NavigationContainer } from '@react-navigation/native';
+
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Home from './src/screens/Home';
+import SquareImages from './src/screens/SquareImages';
+import LandScapeImages from './src/screens/LandScapeImages';
+import PortraitImages from './src/screens/PortraitImages';
+import FavoriteImages from './src/screens/FavoriteImages';
+
+const Stack = createNativeStackNavigator();
 
 const App = () => {
 
@@ -46,13 +60,30 @@ const App = () => {
 ); 
 
 async function checkOrientation(img){
-  if (img.width > img.height) {
-    console.log('landscape');
-    await As
-    } else if (img.width < img.height) {
-    console.log('portrait');
+  if (img.cropRect.width > img.cropRect.height) {
+      console.log('landscape');
+      let array = JSON.parse(await AsyncStorage.getItem('landscapeImageArray')) === null 
+        ? [] 
+        : JSON.parse(await AsyncStorage.getItem('landscapeImageArray'));
+      array.push(img.path);
+      console.log("landscapeImageArray",array);
+      await AsyncStorage.setItem('landscapeImageArray', JSON.stringify(array));
+    } else if (img.cropRect.width < img.cropRect.height) {
+        console.log('portrait');
+        let array = JSON.parse(await AsyncStorage.getItem('portraitImageArray')) === null 
+          ? [] 
+          : JSON.parse(await AsyncStorage.getItem('portraitImageArray'));
+        array.push(img.path);
+        console.log("portraitImageArray",array);
+        await AsyncStorage.setItem('portraitImageArray', JSON.stringify(array));
     } else {
-    console.log('even');
+        console.log('even');
+        let array = JSON.parse(await AsyncStorage.getItem('evenImageArray')) === null 
+          ? [] 
+          : JSON.parse(await AsyncStorage.getItem('evenImageArray'));
+        array.push(img.path);
+        console.log("evenImageArray",array);
+        await AsyncStorage.setItem('evenImageArray', JSON.stringify(array));
     }
 }
 
@@ -62,7 +93,7 @@ function openImagePicker(type) {
       cropping: true,
   })
       .then((image) => {
-          checkOrientation(image.cropRect);
+          checkOrientation(image);
           console.log(image);
       })
       .catch((error) => {
@@ -73,7 +104,7 @@ function openImagePicker(type) {
       cropping: true,
   })
       .then((image) => {
-        checkOrientation(image.cropRect);
+        checkOrientation(image);
         console.log(image);
       })
       .catch((error) => {
@@ -83,38 +114,15 @@ function openImagePicker(type) {
 }
 
   return (
-    <SafeAreaView style={styles.Container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={Colors.white} />
-        <View
-          style={styles.Container}>
-          {/* <Text style={styles.Title}>{"List of Image Categories"}</Text> */}
-          <FlatList
-                  data={list}
-                  renderItem={ ({item}) => renderItem(item)}
-                  keyExtractor={item => item.key}
-                  numColumns={2}
-                />
-                {/* <Image
-          source={{uri: "file:///data/user/0/com.think_bridge/cache/rn_image_picker_lib_temp_46b65a5f-69ef-45a2-b7c2-0ee517112bde.jpg"}}
-          style={styles.imageStyle}
-        />
-        <Text style={styles.textStyle}>{filePath.uri}</Text> */}
-        <TouchableOpacity
-          activeOpacity={0.5}
-          style={styles.buttonStyle}
-          onPress={() => {openImagePicker("camera")}}>
-          <Text style={styles.textStyle}>
-            Launch Camera for Image
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.5}
-          style={styles.buttonStyle}
-          onPress={() => {openImagePicker("gallery")}}>
-          <Text style={styles.textStyle}>Choose Image from Gallery</Text>
-        </TouchableOpacity>
-        </View>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Square" component={SquareImages} />
+        <Stack.Screen name="LandScape" component={LandScapeImages} />
+        <Stack.Screen name="Portrait" component={PortraitImages} />
+        <Stack.Screen name="Favorites" component={FavoriteImages} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

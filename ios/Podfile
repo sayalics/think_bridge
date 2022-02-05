@@ -14,6 +14,8 @@ target 'think_bridge' do
 
   pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'think_bridgeTests' do
     inherit! :complete
     # Pods for testing
